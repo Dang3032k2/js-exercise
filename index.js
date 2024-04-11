@@ -23,7 +23,7 @@ console.log("user", user);
 
 // 	Viết code để tính tổng tất cả các khoản lương và lưu trữ trong biến tổng.
 console.log("\nBai 2");
-let salaries = {
+const salaries = {
   Bui: 1200,
   Viet: 1600,
   Hoang: 1350,
@@ -50,14 +50,16 @@ console.log("sum:", sum);
 // 	  name: "Bui Viet Hoang"
 // 	};
 console.log("\nBai 3");
-let menu = {
+const menu = {
   width: 200,
   height: 300,
   name: "Bui Viet Hoang",
 };
 const multiplyNumeric = (obj) => {
   for (key in obj) {
-    if (typeof obj[key] === "number") obj[key] *= 2;
+    if (typeof obj[key] === "number") {
+      obj[key] *= 2;
+    }
   }
 };
 multiplyNumeric(menu);
@@ -80,7 +82,9 @@ const styles = ["Jazz", "Blues"];
 styles.push("Rock-n-Roll");
 console.log("styles:", styles);
 const length = styles.length;
-if (length % 2 !== 0) styles[(length - 1) / 2] = "Classics";
+if (length % 2 !== 0) {
+  styles.splice((length - 1) / 2, 1, "Classics");
+}
 console.log("styles after change center element:", styles);
 styles.shift();
 console.log("styles after remove first element:", styles);
@@ -100,11 +104,12 @@ console.log(
 console.log("\nBai 5");
 const camelize = (str) => {
   const values = str.split("-");
-  values.forEach((element, index) => {
-    if (index !== 0)
-      values[index] = element.charAt(0).toUpperCase() + element.slice(1);
-  });
-  return values.join("");
+  return values.reduce(
+    (camelizedStr, currentValue) =>
+      camelizedStr +
+      currentValue.charAt(0).toUpperCase() +
+      currentValue.slice(1)
+  );
 };
 console.log(camelize("background-color"));
 console.log(camelize("list-style-image"));
@@ -115,11 +120,10 @@ console.log(camelize("-webkit-transition"));
 
 console.log("\nBai 6");
 const filterRangeInPlace = (arr, a, b) => {
-  const filteredArray = arr.filter((element) => element >= a && element <= b);
-  console.log("filteredArray:", filteredArray);
+  return arr.sort().slice(arr.indexOf(a), arr.indexOf(b) + 1);
 };
 const arr = [1, 2, 3, 4, 5, 8, 10, 0, 7];
-filterRangeInPlace(arr, 4, 8);
+console.log(filterRangeInPlace(arr, 4, 8));
 
 // Bài 7.
 // 	let initArray = [
@@ -134,7 +138,7 @@ filterRangeInPlace(arr, 4, 8);
 // 	Viết code chuyển đổi sang 1 mảng chỉ chứa name.
 
 console.log("\nBai 7");
-let initArray = [
+const initArray = [
   { name: "Bui", age: 25 },
   { name: "Viet", age: 26 },
   { name: "Hoang", age: 27 },
@@ -155,10 +159,14 @@ console.log(nameArray);
 console.log("\nBai 8");
 const getAverageAge = (arr) => {
   let sumOfAge = 0;
+  let count = 0;
   arr
     .filter((item) => item.age)
-    .forEach((element) => (sumOfAge += element.age));
-  return (sumOfAge / arr.length).toFixed(2);
+    .forEach((element) => {
+      sumOfAge += element.age;
+      count++;
+    });
+  return (sumOfAge / count).toFixed(2);
 };
 console.log("averageAge:", getAverageAge(initArray));
 
@@ -169,17 +177,16 @@ console.log("averageAge:", getAverageAge(initArray));
 // 	[Output]: [1, 2, 3, 4, 5, 6]
 
 console.log("\nBai 9");
-let flattened = [
+const flattened = [
   [1, 2],
   [3, 4],
   [5, 6],
 ];
 const flattenedArray = (arr) => {
-  let flatArray = [];
-  for (let a of arr) {
-    flatArray = flatArray.concat(a);
-  }
-  return flatArray;
+  return arr.reduce((flattenedArr, currentArr) => {
+    currentArr.forEach((element) => flattenedArr.push(element));
+    return flattenedArr;
+  });
 };
 console.log("flattenedArray:", flattenedArray(flattened));
 
@@ -187,20 +194,24 @@ console.log("flattenedArray:", flattenedArray(flattened));
 // 	Xây dựng chương trình có một ô input, một button. Sau khi nhập giá trị số vào ô input, click vào button thì in các số từ 1 tới giá trị của ô input ra màn hình. Nếu không nhập vào ô input, click button sẽ in số 1 + "Vui lòng nhập giá trị số vào ô input".
 
 const input = document.getElementById("input");
-const button = document.getElementById("button");
+const form = document.getElementById("form");
 const resultMessage = document.getElementById("result");
 const errorMessaage = document.getElementById("error-message");
 const displayResult = (result, error) => {
   resultMessage.innerHTML = result;
   errorMessaage.innerHTML = error;
 };
-button.addEventListener("click", () => {
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
   const inputValue = input.value;
   if (inputValue) {
-    if (inputValue < 1) displayResult("", "Vui lòng nhập giá trị lớn hơn 0");
-    else {
+    if (inputValue < 1) {
+      displayResult("", "Vui lòng nhập giá trị lớn hơn 0");
+    } else {
       let numberValues = "";
-      for (let i = 1; i <= inputValue; i++) numberValues += i + " ";
+      for (let i = 1; i <= inputValue; i++) {
+        numberValues += i + " ";
+      }
       displayResult(numberValues, "");
     }
   } else {
@@ -219,11 +230,11 @@ button.addEventListener("click", () => {
 console.log("\n\n JS Reduce");
 console.log("\nBai 1");
 const chunk = (arr, size) => {
-  return arr.reduce((chunkedArray, _, currentIndex) => {
-    if (!chunkedArray.length | (currentIndex % size === 0)) {
-      chunkedArray.push(arr.slice(currentIndex, currentIndex + size));
+  return arr.reduce((chunkArray, _, currentIndex) => {
+    if (!chunkArray.length | (currentIndex % size === 0)) {
+      chunkArray.push(arr.slice(currentIndex, currentIndex + size));
     }
-    return chunkedArray;
+    return chunkArray;
   }, []);
 };
 const input1 = [1, 2, 3, 4, 5];
@@ -240,7 +251,9 @@ console.log(output);
 console.log("\nBai 2");
 const difference = (arr1, arr2) => {
   return arr1.reduce((resultArray, currentValue) => {
-    if (!arr2.includes(currentValue)) resultArray.push(currentValue);
+    if (!arr2.includes(currentValue)) {
+      resultArray.push(currentValue);
+    }
     return resultArray;
   }, []);
 };
@@ -255,7 +268,9 @@ console.log("output:", difference(arr1, arr2));
 console.log("\nBai 3");
 const input3 = [2, 1, 0, 3, 2, 1, 2];
 const output3 = input3.reduce((uniqArray, currentValue) => {
-  if (!uniqArray.includes(currentValue)) uniqArray.push(currentValue);
+  if (!uniqArray.includes(currentValue)) {
+    uniqArray.push(currentValue);
+  }
   return uniqArray;
 }, []);
 console.log("output:", output3);
@@ -305,8 +320,11 @@ console.log("\nBai 6");
 const group = (arr, property) => {
   return arr.reduce((groupedObj, currentObj) => {
     const key = currentObj[property];
-    if (!groupedObj[key]) groupedObj[key] = [currentObj];
-    else groupedObj[key].push(currentObj);
+    if (!groupedObj[key]) {
+      groupedObj[key] = [currentObj];
+    } else {
+      groupedObj[key].push(currentObj);
+    }
     return groupedObj;
   }, {});
 };
